@@ -1,0 +1,1 @@
+"""Teraz.sk crawler adapter."""

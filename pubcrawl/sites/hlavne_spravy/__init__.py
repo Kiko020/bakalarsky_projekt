@@ -1,0 +1,1 @@
+"""Hlavné správy crawler adapter."""

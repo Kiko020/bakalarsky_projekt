@@ -1,0 +1,1 @@
+"""Diva.sk publisher adapter."""

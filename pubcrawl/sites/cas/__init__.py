@@ -1,0 +1,1 @@
+"""Cas.sk crawler adapter."""

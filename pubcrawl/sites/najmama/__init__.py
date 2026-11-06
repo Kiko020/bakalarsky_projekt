@@ -1,0 +1,1 @@
+"""Najmama.sk publisher adapter."""

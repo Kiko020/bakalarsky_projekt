@@ -1,0 +1,1 @@
+"""Pluska.sk crawler adapter."""

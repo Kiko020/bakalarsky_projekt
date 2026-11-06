@@ -1,0 +1,1 @@
+"""Topky.sk crawler adapter."""

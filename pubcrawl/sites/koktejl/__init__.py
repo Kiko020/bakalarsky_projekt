@@ -1,0 +1,1 @@
+"""Koktejl.sk crawler adapter."""

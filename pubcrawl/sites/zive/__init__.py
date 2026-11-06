@@ -1,0 +1,1 @@
+"""Živé.sk publisher adapter."""

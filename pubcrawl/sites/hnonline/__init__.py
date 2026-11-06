@@ -1,0 +1,1 @@
+"""HN Online crawler adapter."""

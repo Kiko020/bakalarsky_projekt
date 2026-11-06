@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pubcrawl"
+version = "0.1.0"
+description = "Resumable multi-publisher article archive backed by SQLite"
+requires-python = ">=3.11"
+dependencies = ["Scrapy>=2.19,<2.20"]
+
+[tool.setuptools.packages.find]
+include = ["pubcrawl*"]
