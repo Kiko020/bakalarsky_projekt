@@ -24,7 +24,7 @@ class ModryKonikSpider(scrapy.Spider):
         "AUTOTHROTTLE_MAX_DELAY": 60,
         "AUTOTHROTTLE_TARGET_CONCURRENCY": 0.5,
         "CONCURRENT_REQUESTS_PER_DOMAIN": 1,
-        "CLOSESPIDER_PAGECOUNT": 10,
+        "CLOSESPIDER_PAGECOUNT": 5,
         "FEEDS": {"data/modry_konik_v3.jsonl": {"format": "jsonlines", "encoding": "utf8"}},
     }
 
@@ -68,15 +68,18 @@ class ModryKonikSpider(scrapy.Spider):
         )
         await page.close()
         
-        self.logger.info(f"Nájdených {len(links)} odkazov v {response.url}")
-        
+        seen = set()
         for link in links:
-            self.logger.debug(f"Skúšam odkaz: {link}")
-            if "/forum/" in link and "category" not in link:
-                self.logger.info(f"Posielam na parsovanie: {link}")
+            if "/forum/thread/new/" in link or "/forum/topic/info/" in link:
+                continue
+            if "?page=last" in link or "?scrollto=" in link:
+                continue
+            if link in seen:
+                continue
+            seen.add(link)
+            
+            if "/forum/" in link and link.count("/") >= 6:
                 yield scrapy.Request(link, callback=self.parse_forum)
-            else:
-                self.logger.debug(f"Preskočené (filter): {link}")
 
     def parse_expert(self, response):
         try:
@@ -95,6 +98,9 @@ class ModryKonikSpider(scrapy.Spider):
         }
 
     def parse_forum(self, response):
+        self.logger.info(f"HTML vlákna {response.url} (prvých 2000 znakov):")
+        self.logger.info(response.text[:2000])
+        
         try:
             title, pairs = parse_forum(response)
         except Exception as exc:
