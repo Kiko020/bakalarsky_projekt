@@ -38,3 +38,9 @@ TELNETCONSOLE_ENABLED = False
 REMOTE_CONTROL_ENABLED = False
 LOG_LEVEL = "INFO"
 HTTPERROR_ALLOW_ALL = True
+DOWNLOAD_HANDLERS = {
+    "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+}
+TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
+
+PLAYWRIGHT_BROWSER_TYPE = "firefox"
