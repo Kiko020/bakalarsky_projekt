@@ -1,4 +1,5 @@
 BOT_NAME = "pubcrawl"
+
 SPIDER_MODULES = [
     "pubcrawl.sites.topky.spider",
     "pubcrawl.sites.cas.spider",
@@ -18,9 +19,9 @@ SPIDER_MODULES = [
     "pubcrawl.sites.bratislavske_noviny.spider",
     "pubcrawl.sites.modry_konik.spider",
 ]
+
 SCHEDULER = "pubcrawl.common.scheduler.SQLiteScheduler"
 ROBOTSTXT_OBEY = True
-# Override this with a descriptive contact URL before crawling a production site.
 USER_AGENT = "PubCrawlBot/0.2"
 ROBOTSTXT_USER_AGENT = "PubCrawlBot"
 CONCURRENT_REQUESTS = 2
@@ -38,9 +39,10 @@ TELNETCONSOLE_ENABLED = False
 REMOTE_CONTROL_ENABLED = False
 LOG_LEVEL = "INFO"
 HTTPERROR_ALLOW_ALL = True
+
 DOWNLOAD_HANDLERS = {
     "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
 }
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
-
 PLAYWRIGHT_BROWSER_TYPE = "firefox"
+PLAYWRIGHT_ONLY_WHEN_REQUESTED = True
