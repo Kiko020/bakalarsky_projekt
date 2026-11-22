@@ -29,11 +29,12 @@ class ModryKonikSpider(scrapy.Spider):
 
     def parse(self, response):
         if "/forum/category/" in response.url:
-            parts = response.url.rstrip("/").split("/")
-            category_slug = parts[-1] if parts[-1] != "category" else parts[-2]
-            
-            api_url = f"https://www.modrykonik.sk/api/forum/category/{category_slug}/"
-            yield scrapy.Request(api_url, callback=self.parse_category_api)
+            yield scrapy.Request(
+                response.url,
+                callback=self.parse_category_playwright,
+                meta={"playwright": True, "playwright_include_page": True},
+                dont_filter=True
+            )
             return
 
         for href in response.css("a::attr(href)").getall():
