@@ -68,9 +68,15 @@ class ModryKonikSpider(scrapy.Spider):
         )
         await page.close()
         
+        self.logger.info(f"Nájdených {len(links)} odkazov v {response.url}")
+        
         for link in links:
-            if link.count("/") >= 6 and "/forum/" in link:
+            self.logger.debug(f"Skúšam odkaz: {link}")
+            if "/forum/" in link and "category" not in link:
+                self.logger.info(f"Posielam na parsovanie: {link}")
                 yield scrapy.Request(link, callback=self.parse_forum)
+            else:
+                self.logger.debug(f"Preskočené (filter): {link}")
 
     def parse_expert(self, response):
         try:
