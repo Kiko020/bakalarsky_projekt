@@ -24,6 +24,7 @@ class ModryKonikSpider(scrapy.Spider):
         "AUTOTHROTTLE_MAX_DELAY": 60,
         "AUTOTHROTTLE_TARGET_CONCURRENCY": 0.5,
         "CONCURRENT_REQUESTS_PER_DOMAIN": 1,
+        "CLOSESPIDER_PAGECOUNT": 10,
         "FEEDS": {"data/modry_konik_v3.jsonl": {"format": "jsonlines", "encoding": "utf8"}},
     }
 
