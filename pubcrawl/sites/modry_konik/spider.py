@@ -51,27 +51,25 @@ class ModryKonikSpider(scrapy.Spider):
             elif k == "article_blog":
                 yield response.follow(url, callback=self.parse_blog)
 
-    def parse_category_api(self, response):
-        try:
-            data = json.loads(response.text)
-        except Exception as exc:
-            self.logger.error("API parse failed %s: %s", response.url, exc)
-            return
-
-        posts = data.get("posts", [])
-        category_slug = data.get("topic", {}).get("slug", "")
+    async def parse_category_playwright(self, response):
+        page = response.meta["playwright_page"]
         
-        for post in posts:
-            slug = post.get("slug")
-            if not slug:
-                continue
-            thread_url = f"https://www.modrykonik.sk/forum/{category_slug}/{slug}/"
-            yield scrapy.Request(thread_url, callback=self.parse_forum)
-
-        has_next = data.get("hasNext")
-        if has_next:
-            next_api_url = f"https://www.modrykonik.sk/api/forum/category/{category_slug}/?after={has_next}"
-            yield scrapy.Request(next_api_url, callback=self.parse_category_api)
+        try:
+            await page.wait_for_selector("a[href*='/forum/']", timeout=20000)
+        except Exception as e:
+            self.logger.error(f"Playwright timeout pre {response.url}: {e}")
+            await page.close()
+            return
+        
+        links = await page.eval_on_selector_all(
+            "a[href*='/forum/']", 
+            "elements => elements.map(el => el.href)"
+        )
+        await page.close()
+        
+        for link in links:
+            if link.count("/") >= 6 and "/forum/" in link:
+                yield scrapy.Request(link, callback=self.parse_forum)
 
     def parse_expert(self, response):
         try:
