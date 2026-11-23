@@ -45,8 +45,25 @@ def parse_qa(response):
 
 def parse_forum(response):
     title = clean(" ".join(response.css("h1 ::text").getall()))
-    posts = []
+    if not title:
+        raise ValueError("Chýba nadpis vlákna (h1)")
 
+    op_text = ""
+    question_node = response.css("div.pw_bc")
+    if question_node:
+        op_text = clean(" ".join(question_node[0].css("p ::text, p::text").getall()))
+        if not op_text:
+            op_text = clean(" ".join(question_node[0].css("::text").getall()))
+
+    if op_text and op_text.lower() != title.lower():
+        question = f"{title}\n\n{op_text}"
+    else:
+        question = title
+
+    if len(question) < 15:
+        raise ValueError(f"Príliš krátka otázka vo vlákne: {len(question)}")
+
+    pairs = []
     for node in response.css('[id^="comment-"]'):
         text = clean(" ".join(node.css("div.ic_l p ::text, div.ic_l p::text").getall()))
         if not text:
@@ -61,22 +78,15 @@ def parse_forum(response):
             if count_str and count_str.isdigit():
                 likes = int(count_str)
 
-        posts.append({
-            "text": text,
+        pairs.append({
+            "question": question,
+            "answer": text,
             "likes": likes
         })
 
-    if len(posts) < 2:
-        raise ValueError(f"Málo príspevkov vo vlákne: {len(posts)}")
+    if not pairs:
+        raise ValueError("Žiadne validné odpovede vo vlákne")
 
-    question = posts[0]["text"]
-    pairs = []
-    for post in posts[1:]:
-        pairs.append({
-            "question": question,
-            "answer": post["text"],
-            "likes": post["likes"]
-        })
     return title, pairs
 
 
