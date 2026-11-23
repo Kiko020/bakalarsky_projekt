@@ -8,8 +8,12 @@ ARTICLE_BLOG = re.compile(r"^/blogs/[^/]+/(message|article)/[^/]+/?$", re.I)
 
 
 def normalize(url, base="https://www.modrykonik.sk/"):
-    return normalize_url(url, base=base, hosts={"www.modrykonik.sk", "modrykonik.sk"},
-                         canonical_host="www.modrykonik.sk")
+    return normalize_url(
+        url,
+        base=base,
+        hosts={"www.modrykonik.sk", "modrykonik.sk"},
+        canonical_host="www.modrykonik.sk",
+    )
 
 
 def article_id(url):
@@ -31,27 +35,21 @@ def kind(url):
         return None
 
     if segments[0] == "ask-an-expert":
-        if len(segments) == 1:
-            return "listing"
-        if len(segments) == 2:
+        if len(segments) in (1, 2):
             return "listing"
         if len(segments) == 3:
             return "article_expert"
         return None
 
     if segments[0] == "forum":
-        if len(segments) >= 3 and segments[1] not in {"category", "topics"}:
-            return "article_forum"
-        
-        if len(segments) <= 2 or segments[1] in {"category", "topics"}:
+        if len(segments) >= 2 and segments[1] in {"category", "topics"}:
             return "listing"
-            
-        return None
+        if len(segments) >= 3:
+            return "article_forum"
+        return "listing"
 
     if segments[0] == "blogs":
-        if len(segments) == 1:
-            return "listing"
-        if len(segments) == 2:
+        if len(segments) in (1, 2):
             return "listing"
         if len(segments) >= 4 and segments[2] in {"message", "article"}:
             return "article_blog"
