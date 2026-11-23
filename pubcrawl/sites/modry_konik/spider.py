@@ -26,6 +26,9 @@ class ModryKonikSpider(scrapy.Spider):
         "AUTOTHROTTLE_TARGET_CONCURRENCY": 0.5,
         "CONCURRENT_REQUESTS_PER_DOMAIN": 1,
         "PLAYWRIGHT_MAX_PAGES_PER_CONTEXT": 2,
+        "DEPTH_PRIORITY": 1,
+        "SCHEDULER_DISK_QUEUE": "scrapy.squeues.PickleFifoDiskQueue",
+        "SCHEDULER_MEMORY_QUEUE": "scrapy.squeues.FifoMemoryQueue",
         "PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT": 30000,
         "FEEDS": {
             "data/modry_konik_prod.jsonl": {
