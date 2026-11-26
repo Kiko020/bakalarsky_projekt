@@ -72,11 +72,13 @@ def parse_forum(response):
             continue
 
         likes = 0
-        like_button = node.css('button.bhs_b')
+        like_button = node.css('button.bhs_b') or node.xpath('.//button[contains(., "👍")]')
         if like_button:
-            count_str = clean(like_button[0].css('span:last-child::text').get())
-            if count_str and count_str.isdigit():
-                likes = int(count_str)
+            for t in like_button[0].css('::text').getall():
+                t_clean = clean(t)
+                if t_clean and t_clean.isdigit():
+                    likes = int(t_clean)
+                    break
 
         pairs.append({
             "question": question,
